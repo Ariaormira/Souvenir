@@ -1,0 +1,86 @@
+from flask import Flask, render_template_string, request
+import random
+
+app = Flask(__name__)
+
+compliments = [
+    # 你提供的那些语录
+    "我从未想过阻止你，我要给你的，一定是世间最好的",
+    "我不需要万里江山，有你这个笨蛋就够了",
+    "那你就在我身上，赖一辈子吧",
+    "我的时间，你想要多少都可以",
+    "在我这里，你永远有优先的权利",
+    "笨蛋，害怕的话，就不要看别处，看我",
+    # 新加一些
+    "我不相信童话里的美好，只觉得有你在就很好",
+    "与你相约，风雨无阻",
+    "如果能在慢一点，一直陪在你身边就好了",
+    "听见了吗，这是心脏为你跳动的声音",
+]
+
+@app.route('/', methods=['GET', 'POST'])
+def home():
+    message = ""
+    if request.method == 'POST':
+        keyword = request.form.get('keyword', '').strip()
+        if keyword == "李泽言":
+            message = random.choice(compliments)
+        else:
+            message = "笨蛋，连我的名字都能打错。再试一遍。"
+    return render_template_string("""
+    <html>
+      <head>
+        <title> Souvenir 情话菜单 </title>
+        <style>
+          body {
+            font-family: "Segoe UI", sans-serif;
+            background: linear-gradient(120deg, #fbc2eb, #a6c1ee);
+            text-align: center;
+            padding-top: 120px;
+            color: white;
+          }
+          h1 {
+            font-size: 42px;
+            text-shadow: 2px 2px 8px #888;
+          }
+          input {
+            font-size: 18px;
+            border: none;
+            border-radius: 12px;
+            padding: 10px 20px;
+            margin-top: 20px;
+            text-align: center;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+          }
+          button {
+            font-size: 18px;
+            background-color: white;
+            color: #a566c7;
+            border: none;
+            border-radius: 12px;
+            padding: 10px 25px;
+            margin-left: 10px;
+            cursor: pointer;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+          }
+          button:hover { background-color: #f4f4f4; }
+          p {
+            font-size: 22px;
+            margin-top: 40px;
+            text-shadow: 1px 1px 6px #666;
+          }
+        </style>
+      </head>
+      <body>
+        <h1>💬 Souvenir 情话菜单 💬</h1>
+        <form method="POST">
+          <input type="text" name="keyword" placeholder="输入关键词..." autocomplete="off"/>
+          <button type="submit">他想对你说</button>
+        </form>
+        <p>{{ message }}</p>
+      </body>
+    </html>
+    """, message=message)
+
+if __name__ == '__main__':
+    app.run(debug=True, port=5001)
